@@ -8,21 +8,11 @@ Checks to make sure machine (!Person) is ready for the iOS w/ Swift class.
 
 :copyright: (c) 2014 by Cameron Dershem.
 :license: see TOPMATTER
-:source: github.com/cldershem/repo
+:source: github.com/cldershem/ElevenFiftyScripts
 """
 import platform
 import subprocess
 import os.path
-
-
-"""
-# def can_run_xcode():
-    # if check_os_version:
-        # print("you're good.")
-        # check_xcode_version()
-    # else:
-        # print("No bueno.")
-        """
 
 
 def os_is_mavericks():
@@ -34,7 +24,7 @@ def os_is_mavericks():
 
 
 def xcode_is_installed():
-    if os.path.isfile("/Applications/Xcode.app"):
+    if os.path.isdir("/Applications/Xcode.app"):
         return True
     else:
         return False
@@ -51,6 +41,9 @@ def xcode_version_is_right():
 
 
 def install_xcode():
+    if not os_is_mavericks():
+        update_osx
+    # do the installing here
     print("installing xcode")
 
 
@@ -58,19 +51,19 @@ def update_osx():
     print("updating osx")
 
 
-if __name__ == '__main__':
-    print("begin")
+def update_xcode():
+    print("updating xcode")
+
+
+def main():
     if xcode_is_installed():
-        print("is installed")
         if xcode_version_is_right():
-            print("is right version")
+            print("You won!")
         else:
-            print("not installed")
-            if os_is_mavericks():
-                print("right osx")
-                install_xcode()
-            else:
-                print("wrong osx")
-                update_osx()
-                install_xcode()
-    print("done")
+            update_xcode()
+    else:
+        install_xcode()
+
+
+if __name__ == '__main__':
+    main()

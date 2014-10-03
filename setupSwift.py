@@ -16,7 +16,7 @@ import os.path
 
 
 def os_is_mavericks():
-    version = platform.mac_ver()
+    version, nothing, architecture = platform.mac_ver()
     if version == "10.9" or version == "10.10":
         return True
     else:
@@ -24,7 +24,10 @@ def os_is_mavericks():
 
 
 def xcode_is_installed():
-    if os.path.isdir("/Applications/Xcode.app"):
+    # command = "which xcodebuild"
+    # if subprocess.check_output(command.split()) == "/usr/bin/xcodebuild\n":
+    path_to_xcode = "/Applications/Xcode.app"
+    if os.path.isdir(path_to_xcode):
         return True
     else:
         return False
@@ -42,28 +45,52 @@ def xcode_version_is_right():
 
 def install_xcode():
     if not os_is_mavericks():
-        update_osx
-    # do the installing here
-    print("installing xcode")
+        update_osx()
+    # print("Please update Xcode via the App Store")
+    # url = "http://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12"
+    # subprocess.Popen(["open", url])
+    print("Installing Xcode")
+    command = "hdiutil mount /Volumes/EF/xcode_6.0.1.dmg"
+    subprocess.call(command.split())
+    command = "sudo cp -R /Volumes/Xcode/Xcode.app /Applications"
+    subprocess.call(command.split())
+    command = "hdiutil unmount /Volumes/Xcode"
+    subprocess.call(command.split())
+    print("Finished installing Xcode")
+    return True
 
 
 def update_osx():
-    print("updating osx")
+    print("Please update OSX via the App Store")
+    url = "https://itunes.apple.com/us/app/os-x-mavericks/id675248567?mt=12"
+    subprocess.Popen(["open", url])
 
 
 def update_xcode():
-    print("updating xcode")
+    print("Updating xcode.")
+    command = "softwareupdate --list"
+    subprocess.call(command.split())
+    command = "softwareupdate --install Xcode*"
+    subprocess.call(command.split())
+    if xcode_is_installed() and xcode_is_installed():
+        print("Finished updating xcode.")
+        return True
+    else:
+        print("something didn't go right while updating")
+        return False
 
 
-def main():
+def setup_swift():
     if xcode_is_installed():
         if xcode_version_is_right():
             print("You won!")
         else:
-            update_xcode()
+            if update_xcode():
+                print("Sweet!")
     else:
-        install_xcode()
+        if install_xcode():
+            print("You're all good now!")
 
 
 if __name__ == '__main__':
-    main()
+    setup_swift()
